@@ -24,15 +24,19 @@ function mapCharacter(data) {
 }
 
 function characterCard(character) {
+    const size = 'standard_large'
+    const imgURL = character.thumbnail.path
+    const jpg = character.thumbnail.extension
+    console.log(character.thumbnail.extension)
     let main = document.querySelector('.character-card')
     main.innerHTML += `<div class="card">
     <div class="image">
-      <img src="${character}">
+      <img src="${imgURL + `/` + size + `.` + jpg}">
     </div>
     <div class="content">
       <a class="header">${character.name}</a>
       <div class="meta">
-        <span class="date">Joined in 2013</span>
+        <span class="date">${character.modified}</span>
       </div>
       <div class="description">
         ${character.description}
@@ -41,9 +45,11 @@ function characterCard(character) {
     <div class="extra content">
       <a>
         <i class="user icon"></i>
-        22 Friends
+        Included in ${character.stories.available} Stories
       </a>
     </div>
+    <br>
+    <br>
   </div>`
     console.log(character)
 
