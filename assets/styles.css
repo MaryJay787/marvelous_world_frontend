@@ -20,6 +20,6 @@ div::after {
 }
 
 #logo {
-    align-content: center;
-    size: 50pt
+    bottom: 60pt;
+    position: relative;
 }
