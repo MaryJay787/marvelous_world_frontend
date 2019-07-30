@@ -14,12 +14,16 @@ function handleEvents(e) {
     if (e.target.className === 'character-list') {
         fetchOneCharacter(e.target.dataset.id, listCharacterComics)
     } else if (e.target.className === 'comics-list') {
-        fetchOneComic(e.target.dataset.id)
+        fetchOneComic(e.target.dataset.id, comicCard)
     }
 }
 
-function fetchOneComic(id) {
-
+function fetchOneComic(id, callback) {
+    const apiPublicKey = `6fe07e820cba083ae259838117ced692`
+    const apikey = `&apikey=`
+    fetch(`https://gateway.marvel.com:443/v1/public/comics/${id}?${apikey}${apiPublicKey}`)
+        .then(res => res.json())
+        .then(callback)
 }
 
 function fetchOneCharacter(id, callback) {
@@ -103,4 +107,33 @@ function characterCard(character) {
         // </div>`
     // console.log(character)
 
+}
+
+function comicCard(comic) {
+  let one = comic.data.results[0]
+  const size = 'portrait_xlarge'
+  const imgURL = one.thumbnail.path
+  const jpg = one.thumbnail.extension
+  console.log(comic.data.results[0])
+  let div = document.querySelector('.ui-card')
+  div.innerHTML = `<div class="image">
+      <img src="${imgURL + `/` + size + `.` + jpg}">
+   </div>
+  <div class="content">
+    <a class="header">${one.title}</a>
+    <div class="meta">
+      <span class="date">${one.modified}</span>
+    </div>
+  <div class="description">
+    ${one.description}
+  </div>
+  </div>
+  <div class="extra content">
+    <a>
+      <i class="user icon"></i>
+      ${one.characters.available} Characters
+    </a>
+  </div>
+`
+  
 }
