@@ -4,8 +4,8 @@ document.addEventListener('DOMContentLoaded', setUpPage())
 // const apiPrivateKey = `7c03c2f6964e1445638d9a0348b9a19c334d32c6`
 
 function setUpPage() {
-  let image = document.createElement('img')
-  image.className = ('logo')
+    let image = document.createElement('img')
+    image.className = ('logo')
     fetchCharacters()
 }
 document.addEventListener('click', handleEvents)
@@ -13,7 +13,13 @@ document.addEventListener('click', handleEvents)
 function handleEvents(e) {
     if (e.target.className === 'character-list') {
         fetchOneCharacter(e.target.dataset.id, listCharacterComics)
+    } else if (e.target.className === 'comics-list') {
+        fetchOneComic(e.target.dataset.id)
     }
+}
+
+function fetchOneComic(id) {
+
 }
 
 function fetchOneCharacter(id, callback) {
@@ -30,12 +36,12 @@ function listCharacterComics(comics) {
                 const size = 'standard_large'
                 const imgURL = comic.thumbnail.path
                 const jpg = comic.thumbnail.extension
-                console.log(comic)
+                    // console.log(comic)
                 let div = document.querySelector('.comicsscrollmenu')
                 div.innerHTML = `
         <a>${comic.title}
         <br>
-        <img class="character-list" data-id=${comic.id} src="${imgURL + `/` + size + `.` + jpg}" >
+        <img class="comics-list" data-id=${comic.id} src="${imgURL + `/` + size + `.` + jpg}" >
         </a>
         
       `
@@ -63,9 +69,9 @@ function characterCard(character) {
     const size = 'standard_large'
     const imgURL = character.thumbnail.path
     const jpg = character.thumbnail.extension
-    console.log(character.thumbnail.extension)
+    // console.log(character.thumbnail.extension)
     let div = document.querySelector('.scrollmenu')
-    console.log(div)
+    // console.log(div)
     div.innerHTML += `
     <a>${character.name}
     <br>
