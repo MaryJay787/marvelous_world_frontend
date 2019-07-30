@@ -4,6 +4,8 @@ document.addEventListener('DOMContentLoaded', setUpPage())
 // const apiPrivateKey = `7c03c2f6964e1445638d9a0348b9a19c334d32c6`
 
 function setUpPage() {
+  let image = document.createElement('img')
+  image.className = ('logo')
     fetchCharacters()
 }
 document.addEventListener('click', handleEvents)
@@ -63,6 +65,7 @@ function characterCard(character) {
     const jpg = character.thumbnail.extension
     console.log(character.thumbnail.extension)
     let div = document.querySelector('.scrollmenu')
+    console.log(div)
     div.innerHTML += `
     <a>${character.name}
     <br>
