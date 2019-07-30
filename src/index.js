@@ -2,18 +2,17 @@ document.addEventListener('DOMContentLoaded', setUpPage())
 
 // const apiPublicKey = `6fe07e820cba083ae259838117ced692`
 // const apiPrivateKey = `7c03c2f6964e1445638d9a0348b9a19c334d32c6`
-// const charactersUrl = `https://gateway.marvel.com:443/v1/public/characters?limit=10`
 
 function setUpPage() {
     fetchCharacters()
 }
 
 function fetchCharacters() {
-
     const apiPublicKey = `6fe07e820cba083ae259838117ced692`
-    const apiPrivateKey = `7c03c2f6964e1445638d9a0348b9a19c334d32c6`
+    const apikey = `&apikey=`
+    const charactersUrl = `https://gateway.marvel.com:443/v1/public/characters?limit=10`
 
-    fetch(`https://gateway.marvel.com:443/v1/public/characters?limit=10&apikey=${apiPublicKey}`)
+    fetch(charactersUrl + apikey + apiPublicKey)
         .then(res => res.json())
         .then(data => mapCharacter(data))
 
