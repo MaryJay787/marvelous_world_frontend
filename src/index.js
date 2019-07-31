@@ -116,6 +116,8 @@ function comicCard(comic) {
   const jpg = one.thumbnail.extension
   console.log(comic.data.results[0])
   let div = document.querySelector('.ui-card')
+  let form = document.querySelector('#comment_form')
+  console.log(form)
   div.innerHTML = `<div class="image">
       <img src="${imgURL + `/` + size + `.` + jpg}">
    </div>
@@ -135,5 +137,7 @@ function comicCard(comic) {
     </a>
   </div>
 `
+form.innerHTML += `<input id="comment_input" type="text" name="comment" placeholder="Add Comment" />
+<input type="submit" value="Submit" />`
   
 }
