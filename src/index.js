@@ -37,7 +37,7 @@ function fetchOneCharacter(id, callback) {
 
 function listCharacterComics(comics) {
     comics.data.results.map(function(comic) {
-                const size = 'standard_large'
+                const size = 'portrait_medium'
                 const imgURL = comic.thumbnail.path
                 const jpg = comic.thumbnail.extension
                     // console.log(comic)
@@ -111,13 +111,11 @@ function characterCard(character) {
 
 function comicCard(comic) {
   let one = comic.data.results[0]
-  const size = 'portrait_xlarge'
+  const size = 'portrait_incredible'
   const imgURL = one.thumbnail.path
   const jpg = one.thumbnail.extension
   console.log(comic.data.results[0])
   let div = document.querySelector('.ui-card')
-  let form = document.querySelector('#comment_form')
-  console.log(form)
   div.innerHTML = `<div class="image">
       <img src="${imgURL + `/` + size + `.` + jpg}">
    </div>
@@ -136,8 +134,12 @@ function comicCard(comic) {
       ${one.characters.available} Characters
     </a>
   </div>
+  <div>
+    <form id="comment_form">
+      <input id="comment_input" type="text" name="comment" placeholder="Add Comment" />
+      <input type="submit" value="Submit" />
+    </form>
+  </div>
 `
-form.innerHTML += `<input id="comment_input" type="text" name="comment" placeholder="Add Comment" />
-<input type="submit" value="Submit" />`
   
 }
