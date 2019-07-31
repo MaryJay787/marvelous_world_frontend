@@ -194,26 +194,26 @@ function handleSubmit(e){
       let newCharacter = {
         name: characterName
       }
-      console.log(newCharacter)
-      saveNewCharacter()
-      function saveNewCharacter(newCharacter){
+      //  console.log(newCharacter)
+
+      saveNewCharacter(newCharacter, newComment)
+      function saveNewCharacter(newCharacter, newComment ){
+        console.log(newComment)
+
         fetch('http://localhost:3000/comics', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             Accept: 'application/json'
           },
-          body: JSON.stringify(newCharacter)
+          body: JSON.stringify({comic: newCharacter})
         })
         .then(res => res.json())
-        .then(saveNewComment)
+        .then(res => saveNewComment(res, newComment))
       }
-  // let saveComment = {
-  //   content: newComment,
-  //   comic_id: characterId
-  // }
-
+ 
     function saveNewComment(charObject, newComment){
+      console.log(newComment)
       console.log(charObject.id)
       fetch('http://localhost:3000/comments', {
         method: 'POST',
@@ -221,11 +221,22 @@ function handleSubmit(e){
             'Content-Type': 'application/json',
             Accept: 'application/json'
           },
-          body: JSON.stringify({content: newComment, comic_id: charObject.id})
+          body: JSON.stringify({comment: {content: newComment, comic_id: charObject.id}})
         })
         .then(res => res.json())
-        .then(console.log)
+        .then(showNewComment)
     }
 
-  // debugger;
+}
+
+function showNewComment(commentObject){
+  let comments = []
+  comments.unshift(commentObject.content)
+  console.log(comments)
+let ul = document.querySelector('.comment-list')
+comments.map(function(com){
+  let li = document.createElement('li')
+  li.innerText = com
+  ul.appendChild(li)
+})
 }
