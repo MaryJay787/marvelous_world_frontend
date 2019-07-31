@@ -6,140 +6,160 @@ document.addEventListener('DOMContentLoaded', setUpPage())
 function setUpPage() {
     let image = document.createElement('img')
     image.className = ('logo')
-    fetchCharacters()
+    fetchComics()
 }
 document.addEventListener('click', handleEvents)
+    // document.addEventListener('submit', handleSumbitEvents)
+
+// function handleSumbitEvents(e) {
+//     e.preventDefault()
+//     console.log(e.target.idName === 'comment_input')
+// }
+
+
 
 function handleEvents(e) {
-    if (e.target.className === 'character-list') {
-        fetchOneCharacter(e.target.dataset.id, listCharacterComics)
-    } else if (e.target.className === 'comics-list') {
-        fetchOneComic(e.target.dataset.id, comicCard)
+    if (e.target.className === 'comics-list') {
+        fetchComicCharacters(e.target.dataset.id, listComicCharacters)
+    } else if (e.target.className === 'characters-list') {
+        fetchOneCharacter(e.target.dataset.id, characterCard)
+    } else if (e.target.className === 'submit_btn') {
+        e.preventDefault()
+        commentForm(e)
+
     }
 }
 
-function fetchOneComic(id, callback) {
-    const apiPublicKey = `6fe07e820cba083ae259838117ced692`
-    const apikey = `&apikey=`
-    fetch(`https://gateway.marvel.com:443/v1/public/comics/${id}?${apikey}${apiPublicKey}`)
-        .then(res => res.json())
-        .then(callback)
-}
+// function commentForm(e) {
+//     // let ul = document.querySelector('.comment-list')
+//     // let li = document.createElement('li')
+//     console.log(e.target)
+// }
 
 function fetchOneCharacter(id, callback) {
+    // console.log(id)
     const apiPublicKey = `6fe07e820cba083ae259838117ced692`
     const apikey = `&apikey=`
-    fetch(`https://gateway.marvel.com:443/v1/public/characters/${id}/comics?format=comic&hasDigitalIssue=true${apikey}${apiPublicKey}`)
+    fetch(`https://gateway.marvel.com:443/v1/public/characters/${id}?${apikey}${apiPublicKey}`)
+        .then(res => res.json())
+        .then(callback)
+}
+
+function fetchComicCharacters(id, callback) {
+    const apiPublicKey = `6fe07e820cba083ae259838117ced692`
+    const apikey = `&apikey=`
+    fetch(`https://gateway.marvel.com:443/v1/public/comics/${id}/characters?${apikey}${apiPublicKey}`)
         .then(res => res.json())
         .then(callback)
 
 }
 
-function listCharacterComics(comics) {
-    comics.data.results.map(function(comic) {
-                const size = 'portrait_medium'
-                const imgURL = comic.thumbnail.path
-                const jpg = comic.thumbnail.extension
-                    // console.log(comic)
-                let div = document.querySelector('.comicsscrollmenu')
-                div.innerHTML = `
-        <a>${comic.title}
-        <br>
-        <img class="comics-list" data-id=${comic.id} src="${imgURL + `/` + size + `.` + jpg}" >
-        </a>
-        
-      `
+function listComicCharacters(characters) {
+    characters.data.results.map(function(character) {
+        const size = 'portrait_medium'
+        const imgURL = character.thumbnail.path
+        const jpg = character.thumbnail.extension
+            // console.log(comic)
+        let div = document.querySelector('.comicsscrollmenu')
+
+        let aTag = document.createElement('a')
+        aTag.innerText = character.name
+            // console.log(comicTitle.trunc(20))
+
+        let image = document.createElement('IMG')
+        image.setAttribute('class', 'characters-list')
+        image.dataset.id = character.id
+        image.src = imgURL + `/` + size + `.` + jpg
+        let br = document.createElement('br')
+        aTag.innerHTML += ''
+
+        div.appendChild(aTag)
+        aTag.appendChild(br)
+
+        aTag.appendChild(image)
 
     })
 
 }
 
-function fetchCharacters() {
+function fetchComics() {
     const apiPublicKey = `6fe07e820cba083ae259838117ced692`
     const apikey = `&apikey=`
-    const charactersUrl = `https://gateway.marvel.com:443/v1/public/characters?limit=100`
+    const charactersUrl = `https://gateway.marvel.com:443/v1/public/comics?format=digital%20comic&formatType=comic&noVariants=true&hasDigitalIssue=true&limit=100`
 
     fetch(charactersUrl + apikey + apiPublicKey)
         .then(res => res.json())
-        .then(data => mapCharacter(data))
+        .then(data => mapComics(data))
 
 }
 
-function mapCharacter(data) {
-    data.data.results.map(character => characterCard(character))
+function mapComics(data) {
+    data.data.results.map(comic => comicsCard(comic))
 }
 
-function characterCard(character) {
-    const size = 'standard_large'
-    const imgURL = character.thumbnail.path
-    const jpg = character.thumbnail.extension
-    // console.log(character.thumbnail.extension)
+function comicsCard(comic) {
+    // console.log(comic)
+    String.prototype.trunc = String.prototype.trunc ||
+        function(n) {
+            return (this.length > n) ? this.substr(0, n - 1) + ' ...' : this;
+        }
+    let comicTitle = comic.title
+
+    const size = 'portrait_medium'
+    const imgURL = comic.thumbnail.path
+    const jpg = comic.thumbnail.extension
+        // console.log(character.thumbnail.extension)
     let div = document.querySelector('.scrollmenu')
-    // console.log(div)
-    div.innerHTML += `
-    <a>${character.name}
-    <br>
-    <img class="character-list" data-id=${character.id} src="${imgURL + `/` + size + `.` + jpg}" >
-    </a>
-    
-  `
-        //   main.innerHTML += `<div class="card">
-        //   <div class="image">
-        //     <img src="${imgURL + `/` + size + `.` + jpg}">
-        //   </div>
-        //   <div class="content">
-        //     <a class="header">${character.name}</a>
-        //     <div class="meta">
-        //       <span class="date">${character.modified}</span>
-        //     </div>
-        //     <div class="description">
-        //       ${character.description}
-        //     </div>
-        //   </div>
-        //   <div class="extra content">
-        //     <a>
-        //       <i class="user icon"></i>
-        //       Included in ${character.stories.available} Stories
-        //     </a>
-        //   </div>
-        //   <br>
-        //   <br>
-        // </div>`
-    // console.log(character)
+
+    let aTag = document.createElement('a')
+    aTag.innerText = comicTitle.trunc(15)
+        // console.log(comicTitle.trunc(20))
+
+    let image = document.createElement('IMG')
+    image.setAttribute('class', 'comics-list')
+    image.dataset.id = comic.id
+    image.src = imgURL + `/` + size + `.` + jpg
+    let br = document.createElement('br')
+
+    div.appendChild(aTag)
+    aTag.appendChild(br)
+    aTag.appendChild(image)
+
 
 }
 
-function comicCard(comic) {
-  let one = comic.data.results[0]
-  const size = 'portrait_incredible'
-  const imgURL = one.thumbnail.path
-  const jpg = one.thumbnail.extension
-  console.log(comic.data.results[0])
-  let div = document.querySelector('.ui-card')
-  div.innerHTML = `<div class="image">
-      <img src="${imgURL + `/` + size + `.` + jpg}">
-   </div>
-  <div class="content">
-    <a class="header">${one.title}</a>
-    <div class="meta">
-      <span class="date">${one.modified}</span>
-    </div>
-  <div class="description">
-    ${one.description}
-  </div>
-  </div>
-  <div class="extra content">
-    <a>
-      <i class="user icon"></i>
-      ${one.characters.available} Characters
-    </a>
-  </div>
-  <div>
-    <form id="comment_form">
-      <input id="comment_input" type="text" name="comment" placeholder="Add Comment" />
-      <input type="submit" value="Submit" />
-    </form>
-  </div>
-`
-  
+function characterCard(charact) {
+    let superhero = charact.data.results[0]
+    const size = 'portrait_incredible'
+    const imgURL = superhero.thumbnail.path
+    const jpg = superhero.thumbnail.extension
+    console.log(charact.data.results[0])
+    let div = document.querySelector('.ui-card')
+    div.innerHTML = `<center><div class="image">
+              <img src="${imgURL + `/` + size + `.` + jpg}">
+           </div>
+          <div class="content">
+            <a class="header">${superhero.name}</a>
+            <div class="meta">
+              <span class="date">${superhero.modified}</span>
+            </div>
+          <div class="description">
+            ${superhero.description}
+          </div>
+          </div>
+          <div class="extra content">
+            <a>
+              <i class="user icon"></i>
+              ${superhero.comics.available} Comics
+            </a>
+          </div>
+          <div class="comments-div">
+            <form class="comment_form">
+              <input class="comment_input" type="text" name="comment" placeholder="Add Comment" />
+              <input class="submit_btn" type="submit" value="Submit" />
+            </form>
+            <br>
+          </div></center>
+
+    `
 }
