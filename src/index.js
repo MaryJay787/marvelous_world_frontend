@@ -23,11 +23,8 @@ function handleEvents(e) {
         fetchComicCharacters(e.target.dataset.id, listComicCharacters)
     } else if (e.target.className === 'characters-list') {
         fetchOneCharacter(e.target.dataset.id, characterCard)
-    } else if (e.target.className === 'submit_btn') {
-        e.preventDefault()
-        commentForm(e)
-
     }
+
 }
 
 // function commentForm(e) {
@@ -64,7 +61,6 @@ function listComicCharacters(characters) {
 
         let aTag = document.createElement('a')
         aTag.innerText = character.name
-            // console.log(comicTitle.trunc(20))
 
         let image = document.createElement('IMG')
         image.setAttribute('class', 'characters-list')
@@ -133,33 +129,103 @@ function characterCard(charact) {
     const size = 'portrait_incredible'
     const imgURL = superhero.thumbnail.path
     const jpg = superhero.thumbnail.extension
-    console.log(charact.data.results[0])
+        // console.log(charact.data.results[0])
     let div = document.querySelector('.ui-card')
     div.innerHTML = `<center><div class="image">
               <img src="${imgURL + `/` + size + `.` + jpg}">
            </div>
           <div class="content">
-            <a class="header">${superhero.name}</a>
+            <h1>${superhero.name}</h1>
             <div class="meta">
-              <span class="date">${superhero.modified}</span>
+              <h2 class="date">${superhero.modified}</h2>
             </div>
           <div class="description">
             ${superhero.description}
           </div>
           </div>
           <div class="extra content">
-            <a>
-              <i class="user icon"></i>
+            <h2>
               ${superhero.comics.available} Comics
-            </a>
+            </h2>
           </div>
           <div class="comments-div">
-            <form class="comment_form">
-              <input class="comment_input" type="text" name="comment" placeholder="Add Comment" />
-              <input class="submit_btn" type="submit" value="Submit" />
-            </form>
+            
             <br>
           </div></center>
 
     `
+    let formDiv = document.querySelector('.comments-div')
+    // console.log(formDiv)
+    let form = document.createElement('form')
+    form.setAttribute('class', 'comment_form')
+    let input = document.createElement('input')
+    input.setAttribute('class', 'comment_input')
+    input.dataset.id = superhero.id
+    input.setAttribute('data-name', `${superhero.name}`)
+    input.setAttribute('type', 'text')
+    input.setAttribute('name', 'words')
+    input.setAttribute('placeholder', 'Add Comment')
+    
+    let inputSubmit = document.createElement('input')
+    inputSubmit.setAttribute('class', 'submit_btn')
+    inputSubmit.setAttribute('type', 'submit')
+    inputSubmit.setAttribute('value', 'Submit')
+
+    form.appendChild(input)
+    form.appendChild(inputSubmit)
+    formDiv.appendChild(form)
+
+    form.addEventListener('submit', handleSubmit)
+    
+
+}
+function handleSubmit(e){
+  e.preventDefault()
+     let newComment = (e.target.querySelector('.comment_input').value)
+     let characterId = (e.target.querySelector('.comment_input').dataset.id)
+     let characterName = (e.target.querySelector('.comment_input').dataset.name)
+      let ul = document.querySelector('.comment-list')
+      let li = document.createElement('li')
+      let h3 = document.createElement('h3')
+      h3.innerText = newComment
+
+      li.appendChild(h3)
+      ul.appendChild(li)
+      let newCharacter = {
+        name: characterName
+      }
+      console.log(newCharacter)
+      saveNewCharacter()
+      function saveNewCharacter(newCharacter){
+        fetch('http://localhost:3000/comics', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json'
+          },
+          body: JSON.stringify(newCharacter)
+        })
+        .then(res => res.json())
+        .then(saveNewComment)
+      }
+  // let saveComment = {
+  //   content: newComment,
+  //   comic_id: characterId
+  // }
+
+    function saveNewComment(charObject, newComment){
+      console.log(charObject.id)
+      fetch('http://localhost:3000/comments', {
+        method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json'
+          },
+          body: JSON.stringify({content: newComment, comic_id: charObject.id})
+        })
+        .then(res => res.json())
+        .then(console.log)
+    }
+
+  // debugger;
 }
