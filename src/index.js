@@ -1,22 +1,120 @@
 document.addEventListener('DOMContentLoaded', setUpPage())
 
-// const apiPublicKey = `6fe07e820cba083ae259838117ced692`
-// const apiPrivateKey = `7c03c2f6964e1445638d9a0348b9a19c334d32c6`
-
 function setUpPage() {
     let image = document.createElement('img')
     image.className = ('logo')
     fetchComics()
 }
 document.addEventListener('click', handleEvents)
-    // document.addEventListener('submit', handleSumbitEvents)
 
-// function handleSumbitEvents(e) {
-//     e.preventDefault()
-//     console.log(e.target.idName === 'comment_input')
-// }
+const quizBtn = document.querySelector('#quiz-btn')
+const resultsContainer = document.getElementById('results')
+const submitButton = document.getElementById('submit')
+
+const myQuestions = [{
+    question: "Who is the strongest?",
+    answers: {
+        a: "Superman",
+        b: "The Terminator",
+        c: "Waluigi, obviously"
+    },
+    correctAnswer: "c"
+}, ]
+
+quizBtn.addEventListener('click', handleQuizBtn)
+
+function handleQuizBtn() {
+    const quizContainer = document.getElementById('quiz')
+
+    // hide & seek with the form
+    let showQuiz = false
+
+    showQuiz = !showQuiz
+    if (showQuiz) {
+        quizContainer.style.display = 'block'
+        quizContainer.addEventListener('submit', buildQuiz())
+
+        function buildQuiz() {
+            // we'll need a place to store the HTML output
+            const output = [];
+
+            // for each question...
+            myQuestions.forEach(
+                (currentQuestion, questionNumber) => {
+
+                    // we'll want to store the list of answer choices
+                    const answers = [];
+
+                    // and for each available answer...
+                    for (letter in currentQuestion.answers) {
+                        answers.push(
+                            `<label>
+                  <input type="radio" name="question${questionNumber}" value="${letter}">
+                  ${letter} :
+                  ${currentQuestion.answers[letter]}
+                </label>`
+                        );
+                    }
+
+                    // add this question and its answers to the output
+                    output.push(
+                        `<div class="question"> ${currentQuestion.question} </div>
+              <div class="answers"> ${answers.join('')} </div>`
+                    );
+                }
+            );
+            quizContainer.innerHTML = output.join('');
+            // quizContainer.innerHTML = `<button id="submit">Submit Quiz</button>`
+            let submitButton = document.createElement('button')
+            submitButton.setAttribute('id', "submit")
+            submitButton.innerText = 'Submit Quiz'
+            submitButton.addEventListener('click', showResults)
 
 
+            quizContainer.appendChild(submitButton)
+
+        }
+
+
+        function showResults() {
+
+            // gather answer containers from our quiz
+            const answerContainers = quizContainer.querySelectorAll('.answers');
+
+            // keep track of user's answers
+            let numCorrect = 0;
+
+            // for each question...
+            myQuestions.forEach((currentQuestion, questionNumber) => {
+
+                // find selected answer
+                const answerContainer = answerContainers[questionNumber];
+                const selector = 'input[name=question' + questionNumber + ']:checked';
+                const userAnswer = (answerContainer.querySelector(selector) || {}).value;
+
+                // if answer is correct
+                if (userAnswer === currentQuestion.correctAnswer) {
+                    // add to the number of correct answers
+                    numCorrect++;
+
+                    // color the answers green
+                    answerContainers[questionNumber].style.color = 'lightgreen';
+                }
+                // if answer is wrong or blank
+                else {
+                    // color the answers red
+                    answerContainers[questionNumber].style.color = 'red';
+                }
+            });
+
+            // show number of correct answers out of total
+            resultsContainer.innerHTML = numCorrect + ' out of ' + myQuestions.length;
+        }
+
+    } else {
+        quizContainer.style.display = 'none'
+    }
+}
 
 function handleEvents(e) {
     if (e.target.className === 'comics-list') {
@@ -26,12 +124,6 @@ function handleEvents(e) {
     }
 
 }
-
-// function commentForm(e) {
-//     // let ul = document.querySelector('.comment-list')
-//     // let li = document.createElement('li')
-//     console.log(e.target)
-// }
 
 function fetchOneCharacter(id, callback) {
     // console.log(id)
@@ -182,20 +274,11 @@ function characterCard(charact) {
 function handleSubmit(e){
   e.preventDefault()
      let newComment = (e.target.querySelector('.comment_input').value)
-    //  let characterId = (e.target.querySelector('.comment_input').dataset.id)
      let characterName = (e.target.querySelector('.comment_input').dataset.name)
-      // let ul = document.querySelector('.comment-list')
-      // let li = document.createElement('li')
-      // let h3 = document.createElement('h3')
-      // h3.innerText = newComment
-
-      // li.appendChild(h3)
-      // ul.appendChild(li)
+      
       let newCharacter = {
         name: characterName
       }
-      //  console.log(newCharacter)
-
       saveNewCharacter(newCharacter, newComment)
       function saveNewCharacter(newCharacter, newComment ){
         console.log(newComment)
