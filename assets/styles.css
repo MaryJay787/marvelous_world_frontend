@@ -23,3 +23,6 @@ div::after {
     bottom: 60pt;
     position: relative;
 }
+.ui-card {
+    text-emphasis-color: aliceblue
+}
