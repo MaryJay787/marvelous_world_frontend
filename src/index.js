@@ -182,15 +182,15 @@ function characterCard(charact) {
 function handleSubmit(e){
   e.preventDefault()
      let newComment = (e.target.querySelector('.comment_input').value)
-     let characterId = (e.target.querySelector('.comment_input').dataset.id)
+    //  let characterId = (e.target.querySelector('.comment_input').dataset.id)
      let characterName = (e.target.querySelector('.comment_input').dataset.name)
-      let ul = document.querySelector('.comment-list')
-      let li = document.createElement('li')
-      let h3 = document.createElement('h3')
-      h3.innerText = newComment
+      // let ul = document.querySelector('.comment-list')
+      // let li = document.createElement('li')
+      // let h3 = document.createElement('h3')
+      // h3.innerText = newComment
 
-      li.appendChild(h3)
-      ul.appendChild(li)
+      // li.appendChild(h3)
+      // ul.appendChild(li)
       let newCharacter = {
         name: characterName
       }
@@ -230,13 +230,13 @@ function handleSubmit(e){
 }
 
 function showNewComment(commentObject){
-  let comments = []
-  comments.unshift(commentObject.content)
-  console.log(comments)
+  // let comments = []
+  // comments.unshift(commentObject.content)
+  // console.log(comments)
 let ul = document.querySelector('.comment-list')
-comments.map(function(com){
+// comments.map(function(com){
   let li = document.createElement('li')
-  li.innerText = com
+  li.innerText += commentObject.content
   ul.appendChild(li)
-})
+// })
 }
